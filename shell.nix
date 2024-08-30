@@ -1,13 +1,22 @@
-{ pkgs ? import <nixpkgs> { overlays = [ (import ./python-overlay.nix) ]; } }:
+# shell.nix
+let
+  pkgs = import <nixpkgs> {};
 
-pkgs.mkShell {
-  buildInputs = [
-    pkgs.python312
-    pkgs.python312Packages.pandas
+  python = pkgs.python3.override {
+    self = python;
+    packageOverrides = pyfinal: pyprev: {
+      toolz = pyfinal.callPackage ./toolz.nix { };
+      polars = pyfinal.callPackage ./polars.nix { };
+    };
+  };
+
+in pkgs.mkShell {
+  packages = [
+    (python.withPackages (python-pkgs: [
+      # select Python packages here
+      python-pkgs.pandas
+      python-pkgs.requests
+      python-pkgs.toolz
+    ]))
   ];
-
-  # Polars is not available in nixpkgs as of the last update; you may need to install it via pip
-  shellHook = ''
-    exec ${pkgs.nushell}/bin/nu
-  '';
 }
