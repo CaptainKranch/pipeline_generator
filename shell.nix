@@ -10,10 +10,14 @@ pkgs.mkShell {
   shellHook = ''
     echo "Creating a Python virtual environment"
     PYTHONUSERBASE=$(pwd)/.venv pyvenv cfg
-    export PYTHONPATH=$(pwd)/.venv/lib/python3.9/site-packages:$PYTHONPATH
+    export PYTHONPATH=$(pwd)/.venv/lib/python3.12/site-packages:$PYTHONPATH
     export PATH=$(pwd)/.venv/bin:$PATH
 
     echo "Installing Polars via pip"
-    python -m pip install polars
+    python pip install --upgrade pip
+    python -m pip install polars prefect
+
+    echo "Activating nushell"
+    exec ${pkgs.nushell}/bin/nu
   '';
 }
