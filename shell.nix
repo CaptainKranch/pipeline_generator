@@ -1,31 +1,19 @@
 { pkgs ? import <nixpkgs> {} }:
 
-pkgs.mkShell rec {
+pkgs.mkShell {
   buildInputs = [
-    pkgs.poetry
-    pkgs.zlib
-    pkgs.gcc  # Often required for building Python packages with native extensions
+    pkgs.python312
+    pkgs.python312Packages.pandas
   ];
 
+  # Polars is not available in nixpkgs as of the last update; you may need to install it via pip
   shellHook = ''
-    # Setup the library path for dynamic linking
-    export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath buildInputs}:$LD_LIBRARY_PATH"
-    export LD_LIBRARY_PATH="${pkgs.stdenv.cc.cc.lib.outPath}/lib:$LD_LIBRARY_PATH"
+    echo "Creating a Python virtual environment"
+    PYTHONUSERBASE=$(pwd)/.venv pyvenv cfg
+    export PYTHONPATH=$(pwd)/.venv/lib/python3.9/site-packages:$PYTHONPATH
+    export PATH=$(pwd)/.venv/bin:$PATH
 
-    # Check if the virtual environment exists, if not, use poetry to create it and install dependencies
-    if [ ! -d ".venv" ]; then
-      echo "Creating virtual environment and installing dependencies..."
-      poetry init -n
-      poetry add polars
-    fi
-
-    # Activate the poetry managed virtual environment
-    . .venv/bin/activate
-
-    # Optionally, you can run initial project-specific commands here
-    # echo "Running initial project setup scripts..."
-
-    # Start Nu shell
-    exec ${pkgs.nushell}/bin/nu
+    echo "Installing Polars via pip"
+    python -m pip install polars
   '';
 }
