@@ -1,4 +1,3 @@
-# shell.nix
 let
   pkgs = import <nixpkgs> {};
 
@@ -6,7 +5,7 @@ let
     self = python;
     packageOverrides = pyfinal: pyprev: {
 #      toolz = pyfinal.callPackage ./toolz.nix { };
-      polars = pyfinal.callPackage ./pkgs/polars/polars.nix { };
+#      prefect = pyfinal.callPackage ./pkgs/prefect/prefect.nix { };
     };
   };
 
@@ -18,6 +17,8 @@ in pkgs.mkShell {
       python-pkgs.requests
 #      python-pkgs.toolz
       python-pkgs.polars
+      python-pkgs.duckdb
+#      python-pkgs.prefect
     ]))
   ];
 }

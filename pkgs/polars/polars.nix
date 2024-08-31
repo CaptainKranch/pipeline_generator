@@ -21,7 +21,7 @@ in
 
 buildPythonPackage rec {
   pname = "polars";
-  version = "0.20.15";
+  version = "1.6.0";
   pyproject = true;
 
   disabled = pythonOlder "3.8";
@@ -36,11 +36,17 @@ buildPythonPackage rec {
   # Cargo.lock file is sometimes behind actual release which throws an error,
   # thus the `sed` command
   # Make sure to check that the right substitutions are made when updating the package
-  preBuild = ''
-    #sed -i 's/version = "0.18.0"/version = "${version}"/g' Cargo.lock
-  '';
+#  preBuild = ''
+#    #sed -i 's/version = "0.18.0"/version = "${version}"/g' Cargo.lock
+#  '';
 
-  cargoDeps = rustPlatform.importCargoLock { lockFile = ./Cargo.lock; };
+cargoDeps = rustPlatform.importCargoLock { 
+  lockFile = ./Cargo.lock; 
+  outputHashes = {
+    "numpy-0.21.0" = "sha256-u0Z+6L8pXSPaA3cE1sUpY6sCoaU1clXUcj/avnNzmsw=";
+#    "zstd-sys-2.0.13+zstd.1.5.6" = "sha256-OP8PIc/uj5fZTO9BNZ4MiaphEwKKsCkaqMoAOJlalao=";
+  };
+};
 
   buildAndTestSubdir = "py-polars";
 
@@ -94,6 +100,6 @@ buildPythonPackage rec {
     homepage = "https://github.com/pola-rs/polars";
     changelog = "https://github.com/pola-rs/polars/releases/tag/py-${version}";
     license = licenses.asl20;
-    maintainers = with maintainers; [ happysalada ];
+    maintainers = with maintainers; [ dgm ];
   };
 }
