@@ -1,0 +1,155 @@
+{
+  description = "A Nix-flake-based Python development environment";
+
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
+
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ] (system:
+      let
+        pkgs = import nixpkgs { inherit system; };
+        python = pkgs.python312;
+
+        coolname = pkgs.python312Packages.buildPythonPackage rec {
+          pname = "coolname";
+          version = "2.2.0";  # Adjust the version as needed
+          src = pkgs.python312Packages.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256:6c5d5731759104479e7ca195a9b64f7900ac5bead40183c09323c7d0be9e75c7";  # You need to replace this with the correct hash
+          };
+        };
+        
+        jinja2-humanize-extension = pkgs.python312Packages.buildPythonPackage rec {
+          pname = "jinja2-humanize-extension";
+          version = "0.4.0";  # Adjust the version as needed
+          src = pkgs.python312Packages.fetchPypi {
+            inherit pname version;
+            sha256 = "";  # You need to replace this with the correct hash
+          };
+        };
+
+        prefect = pkgs.python312Packages.buildPythonPackage rec {
+          pname = "prefect";
+          version = "2.20.4";  # Specify the version you need
+          src = pkgs.pythonPackages.fetchPypi {
+            inherit pname version;
+            sha256 = "sha256-4VhiFipMba9o6nCRj6xqGpqscHtuQkYs+qYFFnyxp1U=";  # Replace with the correct hash
+          };
+          propagatedBuildInputs = with pkgs.python312Packages; [
+            aiosqlite
+            alembic
+            annotated-types
+            anyio
+            apprise
+            asgi-lifespan
+            async-timeout
+            asyncpg
+            attrs
+            cachetools
+            certifi
+            cffi
+            charset-normalizer
+            click
+            cloudpickle
+            colorama
+            coolname
+            croniter
+            cryptography
+            dateparser
+            dnspython
+            docker
+            email-validator
+            exceptiongroup
+            fsspec
+            google-auth
+            graphviz
+            greenlet
+            griffe
+            h11
+            h2
+            hpack
+            httpcore
+            httpx
+            humanize
+            hyperframe
+            idna
+            importlib-resources
+            itsdangerous
+            jinja2
+            jinja2-humanize-extension
+            jsonpatch
+            jsonpointer
+            jsonschema
+            jsonschema-specifications
+            kubernetes
+            mako
+            markdown
+            markdown-it-py
+            markupsafe
+            mdurl
+            oauthlib
+            orjson
+            packaging
+            pathspec
+            pendulum
+            prefect
+            pyasn1
+            pyasn1-modules
+            pycparser
+            pydantic
+            pydantic-core
+            pygments
+            python-dateutil
+            python-multipart
+            python-slugify
+            pytz
+            pytzdata
+            pywin32
+            pyyaml
+            readchar
+            referencing
+            regex
+            requests
+            requests-oauthlib
+            rfc3339-validator
+            rich
+            rpds-py
+            rsa
+            ruamel-yaml
+            ruamel-yaml-clib
+            shellingham
+            six
+            sniffio
+            sqlalchemy
+            text-unidecode
+            toml
+            typer
+            typing-extensions
+            tzdata
+            tzlocal
+            ujson
+            urllib3
+            uvicorn
+            websocket-client
+            websockets
+          ];
+        };
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          packages = with pkgs; [ python ] ++
+          (with pkgs.python312Packages; [ 
+            pandas 
+            requests 
+            polars
+            duckdb
+          ]) ++ [ prefect ];
+          shellHook = ''
+            export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib python ]}:$LD_LIBRARY_PATH"
+            # Optionally start nushell, uncomment the next line if needed:
+            exec ${pkgs.nushell}/bin/nu
+          '';
+        };
+      }
+    );
+}
