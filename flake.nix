@@ -10,10 +10,13 @@
         pkgs = import nixpkgs { inherit system; };
         python = pkgs.python312;
         pythonPackages = pkgs.python312Packages;
+
+        # Define the local library
+        myLocalLib = pkgs.callPackage ./src/clients {};
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [ python ] ++
+          packages = with pkgs; [ python, myLocalLib ] ++
           (with pythonPackages; [
             pandas 
             requests 
