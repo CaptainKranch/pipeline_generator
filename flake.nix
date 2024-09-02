@@ -17,13 +17,13 @@
       {
         devShells.default = pkgs.mkShell {
           #packages = with pkgs; [ python, myLocalLib ] ++
-          packages = with pkgs; [ python ] ++
-          (with pythonPackages; [
+          packages = with pkgs; [ python ruff ] ++ (with pythonPackages; [
             pandas 
             requests 
             polars
             duckdb
             virtualenv
+            openpyxl
           ]);
           shellHook = ''
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib python ]}:$LD_LIBRARY_PATH"
