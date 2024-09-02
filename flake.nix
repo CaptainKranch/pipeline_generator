@@ -12,11 +12,12 @@
         pythonPackages = pkgs.python312Packages;
 
         # Define the local library
-        myLocalLib = pkgs.callPackage ./src/clients {};
+        #myLocalLib = pkgs.callPackage ./src/clients {};
       in
       {
         devShells.default = pkgs.mkShell {
-          packages = with pkgs; [ python, myLocalLib ] ++
+          #packages = with pkgs; [ python, myLocalLib ] ++
+          packages = with pkgs; [ python ] ++
           (with pythonPackages; [
             pandas 
             requests 
