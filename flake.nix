@@ -24,6 +24,8 @@
             duckdb
             virtualenv
             openpyxl
+            google-cloud-storage
+            google-cloud-bigquery
           ]);
           shellHook = ''
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib python ]}:$LD_LIBRARY_PATH"
