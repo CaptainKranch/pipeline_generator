@@ -17,7 +17,7 @@
       {
         devShells.default = pkgs.mkShell {
           #packages = with pkgs; [ python, myLocalLib ] ++
-          packages = with pkgs; [ python ruff ] ++ (with pythonPackages; [
+          packages = with pkgs; [ python ruff google-cloud-sdk ] ++ (with pythonPackages; [
             pandas 
             requests 
             polars
