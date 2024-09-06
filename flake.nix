@@ -24,6 +24,7 @@
             duckdb
             virtualenv
             openpyxl
+            db-dtypes
             google-cloud-storage
             google-cloud-bigquery
             google-cloud-secret-manager
