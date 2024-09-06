@@ -49,6 +49,12 @@
             else
               echo "Prefect is already installed."
             fi
+
+            # Check if gcloud is authenticated
+            if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" > /dev/null 2>&1; then
+              echo "Please authenticate with gcloud..."
+              gcloud auth login
+            fi
             exec ${pkgs.nushell}/bin/nu
           '';
         };
