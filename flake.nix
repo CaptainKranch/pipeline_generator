@@ -44,9 +44,6 @@
             echo "Activating virtual environment..."
             source .venv/bin/activate
 
-            echo "creating requierments.txt"
-            pip freeze > requirements.txt
-
             if ! pip list | grep -q prefect; then
               echo "Installing prefect..."
               pip install prefect 2>&1 | cat  # Redirect output to handle broken pipe
