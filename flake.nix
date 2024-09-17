@@ -29,6 +29,7 @@
             google-cloud-bigquery
             google-cloud-secret-manager
             azure-storage-blob
+            pypdf2
           ]);
           shellHook = ''
             export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib python ]}:$LD_LIBRARY_PATH"
